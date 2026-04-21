@@ -1,0 +1,62 @@
+01)
+SELECT name, age
+FROM user
+WHERE age > (SELECT AVG(age) FROM user)
+ORDER BY age DESC;
+
+02)
+SELECT id, name
+FROM user
+WHERE id NOT IN (SELECT user_id FROM idea)
+ORDER BY name ASC;
+
+03)
+SELECT id, description 
+FROM idea 
+WHERE id IN (
+    SELECT idea_id 
+    FROM idea_category 
+    WHERE category_id = (
+        SELECT id 
+        FROM category 
+        WHERE name = 'Sustainability'
+    )
+) 
+ORDER BY id ASC;
+
+04)
+SELECT id, description 
+FROM idea 
+WHERE id IN (
+    SELECT idea_id 
+    FROM user_idea_rating 
+    WHERE rating_id IN (
+        SELECT id 
+        FROM rating 
+        WHERE value = 5
+    )
+)
+ORDER BY id ASC;
+
+05)
+SELECT id, name
+FROM category
+WHERE id NOT IN (SELECT category_id FROM idea_category)
+ORDER BY name ASC;
+
+06)
+SELECT id, description
+FROM idea
+WHERE id NOT IN (SELECT idea_id FROM user_idea_rating)
+ORDER BY id ASC;
+
+07)
+SELECT name 
+FROM user 
+WHERE id = (
+    SELECT user_id 
+    FROM idea 
+    GROUP BY user_id 
+    ORDER BY COUNT(id) DESC 
+    LIMIT 1
+);
