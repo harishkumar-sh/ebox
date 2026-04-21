@@ -1,0 +1,53 @@
+01)
+CREATE TABLE user (
+    id INT(11) PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    age INT(11) NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    created_date DATE NOT NULL,
+    status VARCHAR(50)NOT NULL);
+
+02)
+CREATE TABLE category (
+    id INT(11) PRIMARY KEY,
+    name VARCHAR(50)NOT NULL
+);
+
+03)
+CREATE TABLE rating (
+    id INT(11) PRIMARY KEY,
+    name VARCHAR(50)NOT NULL,
+    description VARCHAR(255)NOT NULL,
+    value INT(11)NOT NULL
+);
+
+04)
+CREATE TABLE idea (
+    id INT(11) PRIMARY KEY,
+    description TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    user_id INT(11) NOT NULL,
+    postedDate DATE NOT NULL
+);
+
+05)
+DROP TABLE IF EXISTS idea_category;
+CREATE TABLE idea_category (
+    idea_id INT(11) NOT NULL,
+    category_id INT(11) NOT NULL,
+    FOREIGN KEY (idea_id) REFERENCES idea(id),
+    FOREIGN KEY (category_id) REFERENCES category(id)
+);
+
+06)
+CREATE TABLE user_idea_rating (
+    rated_date DATE NOT NULL,
+    user_id INT(11) NOT NULL,
+    rating_id INT(11) NOT NULL,
+    idea_id INT(11) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    FOREIGN KEY (rating_id) REFERENCES rating(id),
+    FOREIGN KEY (idea_id) REFERENCES idea(id)
+);
