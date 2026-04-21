@@ -1,0 +1,115 @@
+01)
+SELECT b.*, m.*
+FROM bill b
+JOIN meter m
+ON b.meter_id = m.id
+ORDER BY b.payable_amount ASC;
+
+02)
+SELECT 
+    m.meter_number,
+    b.owner_name,
+    b.address,
+    b.contact_number
+FROM building b
+INNER JOIN meter m
+ON b.id = m.building_id
+ORDER BY b.owner_name ASC, m.meter_number ASC;
+
+03)
+SELECT
+    m.meter_number,
+    b.owner_name,
+    b.address,
+    b.contact_number,
+    bt.name AS building_type_name,
+    ect.connection_name
+FROM meter m
+INNER JOIN building b 
+    ON m.building_id = b.id
+INNER JOIN building_type bt 
+    ON b.building_type_id = bt.id
+INNER JOIN electricity_connection_type ect 
+    ON bt.connection_type_id = ect.id
+ORDER BY b.owner_name ASC, m.meter_number ASC;
+
+04)
+SELECT 
+    ect.connection_name, 
+    s.from_unit, 
+    s.to_unit, 
+    s.rate
+FROM 
+    electricity_connection_type ect
+JOIN 
+    slab s ON ect.id = s.connection_type_id
+ORDER BY 
+    s.rate ASC;
+
+05)
+select b.owner_name,b.address,count(m.id) as connection_count
+from building b
+join meter m on b.id = m.building_id
+group by b.id,b.owner_name,b.address
+order by b.owner_name;
+
+06)
+select b.owner_name,b.address,m.meter_number,bl.payable_amount
+from building b 
+join meter m on b.id = m.building_id
+join bill bl on m.id = bl.meter_id
+where (bl.fine_amount = 0 or bl.fine_amount is null)
+and bl.year = 2017
+and bl.month = 12
+order by owner_name asc;
+
+07)
+select b.owner_name,b.Address,m.meter_number,bi.payable_amount
+from building b
+join meter m on b.id = m.building_id
+join bill bi on m.id = bi.meter_id
+where bi.fine_amount = (select max(fine_amount)from bill)
+order by b.owner_name;
+
+08)
+select b.owner_name,b.address,m.meter_number,bl.total_units
+from building b
+join meter m on b.id = m.building_id
+join bill bl on m.id = bl.meter_id
+where bl.month = 12
+and bl.year = 2017
+order by bl.total_units desc;
+
+09)
+select b.owner_name,sum(bl.payable_amount) as totalbillamount
+from building b
+join meter m on b.id = m.building_id
+join bill bl on m.id = bl.meter_id
+where bl.year = 2017
+group by b.owner_name
+having sum(bl.payable_amount) = (select max(total)
+                                 from(
+                                   select sum(payable_amount)as total
+                                   from bill
+                                   where year = 2017
+                                   group by meter_id
+                                 )as temp
+)
+order by b.owner_name asc;
+
+10)
+select b.owner_name,
+       bt.name as building_type_name,
+       m.meter_number,
+       coalesce(cast(bi.payment_date as char),'not paid yet') as payment_status
+from 
+   building b
+join
+   building_type bt on b.building_type_id = bt.id
+join
+    meter m on b.id = m.building_id
+join
+    bill bi on m.id = bi.meter_id
+where
+    bi.month = 12 and bi.year = 2017
+order by b.owner_name;
