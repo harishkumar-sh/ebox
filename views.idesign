@@ -1,0 +1,12 @@
+01)
+CREATE OR REPLACE VIEW building_details AS
+SELECT *
+FROM building;
+
+02)
+CREATE OR REPLACE VIEW building_owners AS
+SELECT owner_name
+FROM building;
+
+03)
+CREATE VIEW owner_details AS SELECT owner_name, contact_number FROM building WHERE LENGTH(owner_name) > 15;
